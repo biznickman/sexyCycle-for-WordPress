@@ -68,9 +68,25 @@ function scfw_gallery_shortcode($null, $attr = array()) {
     'caption'       => $scfw_settings['scfw_caption'] ? $scfw_settings['scfw_caption'] : '0',
     'counter'       => $scfw_settings['scfw_counter'] ? $scfw_settings['scfw_counter'] : '0',
     'cycle'         => $scfw_settings['scfw_cycle'] ? $scfw_settings['scfw_cycle'] : NULL,
-    'imgclick'      => $scfw_settings['scfw_imgclick'] ? $scfw_settings['scfw_imgclick'] : '0'
-  ), $attr));
-
+    'imgclick'      => $scfw_settings['scfw_imgclick'] ? $scfw_settings['scfw_imgclick'] : '0',
+		'exclude' 			=> array(),
+		'exclude_files' => array()
+  ), $attr)); //Set array
+	//Handle exclusion of images from the gallery
+	if(!is_array($exclude)){
+		if(preg_match("/,/",$exclude)) // if there is a comma, explode
+			$exclude = explode(",",$exclude);
+		else
+			$exclude = array($exclude);
+	}
+	//Handle exclusions by name
+	if(!is_array($exclude_files)){
+		if(preg_match("/,/",$exclude_files))
+			$exclude_files = explode(",",$exclude_files);
+		else
+			$exclude_files = array($exclude_files);
+	}
+	
   $id = intval($id);
 
   $attachments = get_children(array(
@@ -88,9 +104,8 @@ function scfw_gallery_shortcode($null, $attr = array()) {
 
   if (is_feed()) {
     $ret = "\n";
-    foreach ( $attachments as $att_id => $attachment ) {
-      $ret .= wp_get_attachment_link($att_id, 'small', true) . "\n";
-    }
+    foreach ( $attachments as $att_id => $attachment ) 
+			$ret .= wp_get_attachment_link($att_id, 'small', true) . "\n";
   }
 
   if (!$ret) {
@@ -169,9 +184,12 @@ function scfw_gallery_shortcode($null, $attr = array()) {
 
     // Create list items with images
     foreach ( $attachments as $gallery_id => $attachment ) {
+	  	if( in_array($attachment->ID,$exclude) )
+				continue;
+			if( in_array( basename($attachment->guid),$exclude_files ) )
+				continue;
       $link = wp_get_attachment_image($gallery_id, $size, true, false);
       $ret .= "    <{$icontag}>";
-
       // Image link
       if ($imgclick == 'link') {
         $ret .= "<a href=\"" . $attachment->guid . "\" alt=\"" . $attachment->post_name . "\">";
