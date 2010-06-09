@@ -79,15 +79,26 @@
 
         $("li", sexyCycle).css("float", "left");
         $(box).css('width', _w + 'px'); //Set the box surrounding the images to the width of the first image
-
+        
         $(".sexyCycle-content", sexyCycle).animate({
             'left': '-=' + _left + 'px'
         }, {
             duration: 0
         });
-
-        $(box).css("height", ($(sexyCycle).height() + $('.controllers', box).height() + 10) + "px"); //Set the heightof the box to the height of the first image + the controllers + 10 (for potential captions)
-
+        
+        var _cap_height = 0;
+        if( $(".sexyCycle-content li:eq(0)", sexyCycle).find('span').height() != null ) // If there's a caption
+            _cap_height = $(".sexyCycle-content li:eq(0)", sexyCycle).find('span').height(); 
+        
+        //Set the box height
+        var _h = $(sexyCycle).height() + $('.controllers', box).height() + _cap_height;
+        $(box).css("height", (_h + "px")); //Set the heightof the box to the height of the first image + the controllers + caption height
+        if( _cap_height > 0 ){ //If the caption height > 0, resize the box
+            $(box).css('height', _h + 'px');
+            $(".sexyCycle-wrap", sexyCycle).css("height", _h);
+            $(".sexyCycle-content li .gallery-caption", sexyCycle).css("top", _th + 'px'); //Reposition to the height of 1st image
+        }
+        
         $(options.next).click(function () {
             slide('+');  //Set the value of clicking the next button to "+"
         });
@@ -139,8 +150,14 @@
                 if (_cn - 1 < _t - 1 && _cn - 1 >= -1) {
 
                     _w = $(".sexyCycle-content img:eq(" + _cn + ")", sexyCycle).width();
-                    _h = $(".sexyCycle-content img:eq(" + _cn + ")", sexyCycle).height() + 10;
-
+                    _h = $(".sexyCycle-content img:eq(" + _cn + ")", sexyCycle).height();
+                    _img_h = _h;
+                    _cap_height = $(".sexyCycle-content li:eq("+_cn+")", sexyCycle).find('span').height(); //Find the height of the caption
+                    if(_cap_height != null){ //If there is a caption, make sure that the box is resized for it to fit and it's properly positioned
+                        _h += _cap_height; 
+                        $(".sexyCycle-wrap", sexyCycle).css("height", _h);
+                        $(".sexyCycle-content li .gallery-caption", sexyCycle).css("top", _img_h + 'px');
+                    }
                     $(".sexyCycle-content", sexyCycle).animate({
                         'left': slideto + _p + 'px'
                     }, {
@@ -196,7 +213,14 @@
                         }
 
                         _w = $(".sexyCycle-content img:eq(" + count + ")", sexyCycle).width();
-                        _h = $(".sexyCycle-content img:eq(" + count + ")", sexyCycle).height() + 10;
+                        _h = $(".sexyCycle-content img:eq(" + count + ")", sexyCycle).height();
+                        _img_h = _h;
+                        _cap_height = $(".sexyCycle-content li:eq("+_cn+")", sexyCycle).find('span').height(); //Find the height of the caption
+                        if(_cap_height != null){ //If there is a caption, make sure that the box is resized for it to fit and it's properly positioned
+                            _h += _cap_height; 
+                            $(".sexyCycle-wrap", sexyCycle).css("height", _h);
+                            $(".sexyCycle-content li .gallery-caption", sexyCycle).css("top", _img_h + 'px');
+                        }
                         
                         $(box).animate({
                             'width': _w + 'px',
