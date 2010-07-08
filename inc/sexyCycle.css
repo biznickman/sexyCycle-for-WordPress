@@ -19,3 +19,4 @@ ul.sexyCycle-content  { list-style: none; margin: 0 !important; padding: 0 !impo
 .cursor { cursor: pointer; } 
 .sexyCycle .controllers { width: 100%; }
 .sexyCycle .controllers .prev { border-right: 2px solid #ccc; margin: 0 10px 0 0; padding: 0 10px 0 0; }
+.sexyCycle .gallery-title{ display:none; }

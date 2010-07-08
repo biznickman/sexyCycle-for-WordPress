@@ -194,6 +194,14 @@ $scfw_options['caption'] = array(
   "std" => 0
 );
 
+$scfw_options['title'] = array(
+	"name" => "Title",
+	"desc" => "If checked, slideshow will display a title of the gallery before the counter.",
+	"id" => $scfw_shortname ."_title",
+	"type" => "checkbox",
+	"std" => 0
+);
+
 $scfw_options['counter'] = array(
   "name" => "Slide counter",
   "desc" => "If checked, slideshow will include a slide counter.",

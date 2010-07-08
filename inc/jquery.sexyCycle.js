@@ -23,7 +23,8 @@
             interval: false,
             cycle: true,
             imgclick: true,
-            counter: null
+            counter: null,
+            title: null
         };
         
         var options = $.extend(defaults, options);
@@ -64,10 +65,16 @@
             _left += $(".sexyCycle-content img:eq(" + _lc + ")", sexyCycle).width();
         }
         
+        //Initiate the title
+        if($(options.title)){
+            //Set the title div to the title value
+            $(options.title).text( $(".sexyCycle-content .gallery-title:eq("+(count)+")", sexyCycle).html() );
+        }
         //Initiate the counter 
         if( $(options.counter).length > 0 ){
             $(options.counter).html("<span style='counter-text'>"+ (count+1) +" of "+ _t +"</span>");
         }
+
         //Another set of temporary spans that I'm not sure why they exist
         $('<span class="sexyCycleTempf" style="background: url(\'' + _tmp + '\'); float: left; width: ' + _tmpw + 'px; height: ' + _tmph + 'px; display: block"></span>').insertBefore($(".sexyCycle-content li:eq(0)", sexyCycle));
         $(".sexyCycleTempf", sexyCycle).css("display", "none");
@@ -158,6 +165,7 @@
                         $(".sexyCycle-wrap", sexyCycle).css("height", _h);
                         $(".sexyCycle-content li .gallery-caption", sexyCycle).css("top", _img_h + 'px');
                     }
+                    //Move the slide
                     $(".sexyCycle-content", sexyCycle).animate({
                         'left': slideto + _p + 'px'
                     }, {
@@ -238,6 +246,10 @@
                     }
                 }
 
+            }
+            if($(options.title)){
+                //Set the title div to the title value
+                $(options.title).text( $(".sexyCycle-content .gallery-title:eq("+(count)+")", sexyCycle).html() );
             }
             //Update the counter 
             if( $(options.counter).length > 0 ){

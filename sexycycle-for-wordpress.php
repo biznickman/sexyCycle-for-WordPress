@@ -1,5 +1,4 @@
 <?php
-
 /* 
 Plugin Name: sexyCycle for WordPress
 Plugin URI: http://github.com/linuslundahl/sexyCycle-for-WordPress/
@@ -55,9 +54,10 @@ function scfw_gallery_shortcode($null, $attr = array()) {
     'itemtag'       => 'ul',
     'icontag'       => 'li',
     'captiontag'    => 'span',
+    'titletag'      => 'span',
     'size'          => $scfw_settings['scfw_img_size'] ? $scfw_settings['scfw_img_size'] : 'large',
     'prev'          => $scfw_settings['scfw_prev'] ? stripslashes($scfw_settings['scfw_prev']) : 'Prev',
-    'counter'       => $scfw_settings['scfw_counter'] ? $scfw_settings['scfw_counter'] : NULL,
+    //'counter'       => $scfw_settings['scfw_counter'] ? $scfw_settings['scfw_counter'] : NULL,
     'next'          => $scfw_settings['scfw_next'] ? stripslashes($scfw_settings['scfw_next']) : 'Next',
     'stop'          => $scfw_settings['scfw_stop'] ? $scfw_settings['scfw_stop'] : 'Stop',
     'animation'     => $scfw_settings['scfw_animation'] ? $scfw_settings['scfw_animation'] : 'easeOutExpo',
@@ -66,6 +66,7 @@ function scfw_gallery_shortcode($null, $attr = array()) {
     'speed'         => $scfw_settings['scfw_speed'] ? $scfw_settings['scfw_speed'] : '400',
     'interval'      => $scfw_settings['scfw_interval'] ? $scfw_settings['scfw_interval'] : '',
     'caption'       => $scfw_settings['scfw_caption'] ? $scfw_settings['scfw_caption'] : '0',
+    'title'         => $scfw_settings['scfw_title'] ? $scfw_settings['scfw_title'] : '0',
     'counter'       => $scfw_settings['scfw_counter'] ? $scfw_settings['scfw_counter'] : '0',
     'cycle'         => $scfw_settings['scfw_cycle'] ? $scfw_settings['scfw_cycle'] : NULL,
     'imgclick'      => $scfw_settings['scfw_imgclick'] ? $scfw_settings['scfw_imgclick'] : '0',
@@ -142,7 +143,9 @@ function scfw_gallery_shortcode($null, $attr = array()) {
       if ($imgclick == 'nothing' || $imgclick == 'link') {
         $js .= "imgclick: false,";
       }
-	  
+	  if ($title) {
+	      $js .= "title: '#title-$id',";
+	  }
 	  if ($counter) {
 		$js .= "counter: '#counter-$id',";
 	  }
@@ -164,13 +167,16 @@ function scfw_gallery_shortcode($null, $attr = array()) {
 
     // Add JS for each gallery
     $ret .= apply_filters('gallery_style', "<script type=\"text/javascript\">jQuery(function($) { $(\"#box-$id\").sexyCycle($js); });</script>\n");
-
-    // Controls (prev)
-    if ($counter) {
-      $ret .= "  <div id=\"counter-$id\" class=\"counter\"></div>\n";
+    //Add the title
+    if($title){
+        $ret .= "<div id=\"title-$id\" class=\"title\"></div>\n";
     }
     if ($controls == 'above') {
       $ret .= "  <div class=\"controllers above" . $class_cabove . "\"><span id=\"prev-$id\" class=\"prev cursor\">" . $prev . "</span><span id=\"next-$id\" class=\"next cursor\">" . $next . "</span></div>\n";
+    }
+    // Controls (prev)
+    if ($counter) {
+      $ret .= "  <div id=\"counter-$id\" class=\"counter\"></div>\n";
     }
     if ($controls == 'beforeafter') {
       $ret .= "  <div class=\"controllers before" . $class_cbefore . "\"><span id=\"prev-$id\" class=\"prev cursor\">" . $prev . "</span></div>\n";
@@ -196,7 +202,7 @@ function scfw_gallery_shortcode($null, $attr = array()) {
       }
 
       $ret .= "$link";
-
+      
       // Caption
       if ($caption == 'caption' && trim($attachment->post_excerpt)) {
         $ret .= "<{$captiontag} class='gallery-caption'>" . wptexturize($attachment->post_excerpt) . "</{$captiontag}>";
@@ -204,12 +210,14 @@ function scfw_gallery_shortcode($null, $attr = array()) {
       else if ($caption == 'desc' && trim($attachment->post_content)) {
         $ret .= "<{$captiontag} class='gallery-caption'>" . wptexturize($attachment->post_content) . "</{$captiontag}>";
       }
-
       // End image link
       if ($imgclick == 'link') {
         $ret .= "</a>";
       }
-
+      //Title
+      if($title){
+        $ret .= "<{$titletag} class='gallery-title'>" . wptexturize($attachment->post_title) ."</{$titletag}>";
+      }
       $ret .= "</{$icontag}>\n";
     }
 
